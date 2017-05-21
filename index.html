@@ -68,7 +68,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                      new Sprite(1, "Luke Skywalker", 0, 0, "assets/images/Luke-2.png"),
                      new Sprite(2, "Darth Sidious", 0, 0, "assets/images/Darth-3.jpg"),
                      new Sprite(3, "Darth Maul", 0, 0, "assets/images/Darth-4.jpg")];
-        var orginialHP = 0;
+        // var orginialHP = 0;
         var powerMIN = 100;
         var powerMAX = 200;
         var hpMAX = 20;
@@ -78,7 +78,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
          function initGame() {
           clearGame();
-          orginialHP = 0;
+          // orginialHP = 0;
 
            $.each(players, createPlayerDisplaySprite);
 
@@ -237,7 +237,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             $("#cmdAttack").attr("disabled", "true");
             $("#restart").css("display", "block");
           }
-          myPlayer.attackPower += orginialHP;
+          myPlayer.attackPower += getRandomInt(hpMIN, hpMAX/2);;
         }
 
         function validatePlayer(parent, childLength, warnMessage) {
@@ -256,7 +256,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           switch(parentID) {
             case "dugout":
               myPlayer = players[currentID];
-              orginialHP = myPlayer.attackPower;
+              //orginialHP = myPlayer.attackPower;
               $("#yourCharacter").append($(this));
               $.each($("#dugout").children(), moveElementsToEnemies);
               break;
