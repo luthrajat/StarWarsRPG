@@ -2,6 +2,7 @@ body {
     background-image:url("../images/background.jpg");
     background-repeat: no-repeat center center fixed;
     background-size: cover;
+    font-size: 7px;
 }
 
 table {
@@ -63,4 +64,9 @@ h3 {
 
 .progress {
   margin-bottom: 0px;
+}
+
+.alert {
+  font-size: 16px;
+  font-weight: bold;
 }

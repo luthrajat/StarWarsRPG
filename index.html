@@ -89,6 +89,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
            $("#defender").append(createNewTextDisplay("Defender"));
            $("#restart").append(createAButton("cmdRestart", "Restart", initGame));
            $("#restart").css("display", "none");
+           $("#cmdAttack").attr("disabled", "true");
+
+           $("#notes").removeClass("alert alert-info alert-warning alert-danger alert-success");
+           $("#notes").addClass("alert alert-info");
+           $("#notes").text("Please choose Players!!!");
          }
 
         function clearGame() {
@@ -136,7 +141,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           caption.addClass("caption");
           caption.text(displayString);
           caption.css("text-align", "center");
-          caption.css("fontSize", 8);
+          caption.css("fontSize", 9);
           caption.width(100);
           return caption;
         }
@@ -165,12 +170,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             progressBar.attr("aria-valuenow",displayString);
             progressBar.text(displayString);
         }
-
-        // function updatePowerSpan(currentPlayer) {
-        //     var power
-        //     $("#id-"+currentPlayer.index+"-power").text(currentPlayer.power);
-        // }
-
 
         function createNewTextDisplay(displayString) {
           var displayDiv = $("<div>");
@@ -207,30 +206,33 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           if (myPlayer.power<1 || defender.power<1) return;
           myPlayer.power -= defender.attackPower;
           defender.power -= myPlayer.attackPower;
-          // updatePowerSpan(myPlayer);
-          // updatePowerSpan(defender);
-          // updateProgressBar(myPlayer);
-          // updateProgressBar(defender);
           updateProgressBar("power", myPlayer.index, myPlayer.power);
           updateProgressBar("power", defender.index, defender.power);
 
           if (myPlayer.power>0 && defender.power>0) {
-            //$("#notes").text(myPlayer.power + "&" + defender.power + "<--PW AK-> " + myPlayer.attackPower + "&" + defender.attackPower);
-            $("#notes").text("You attacked " + defender.name + " for " + myPlayer.attackPower + " damage.");
+            $("#notes").removeClass("alert-info alert-warning alert-danger alert-success");
+            $("#notes").addClass("alert-info");
+            $("#notes").html("You attacked " + defender.name + " for <span class='badge badge-pill badge-primary'>" + myPlayer.attackPower + "</span> damage.");
             $("#notes").append("<br/>");
-            $("#notes").append(defender.name + " attacked you back with " + defender.attackPower + " damage.");
+            $("#notes").append(defender.name + " attacked you back with <span class='badge badge-pill badge-primary'>" + defender.attackPower + "</span> damage.");
           } else if (myPlayer.power<1 && defender.power>=1) {
+            $("#notes").removeClass("alert-info alert-warning alert-danger alert-success");
+            $("#notes").addClass("alert-danger");
             $("#notes").text("You have been defeted, GAME OVER!!!");
             $("#restart").css("display", "block");
             $("#cmdAttack").attr("disabled", "true");
           } else if (defender.power<1 && myPlayer.power>=1) {
+            $("#notes").removeClass("alert-info alert-warning alert-danger alert-success");
+            $("#notes").addClass("alert-success");
             $("#notes").text("You won!!!!");
             if ($("#enemies").children().length==1) {
               $("#restart").css("display", "block");
-              $("#cmdAttack").attr("disabled", "true");
             }
+            $("#cmdAttack").attr("disabled", "true");
             $("#id-"+defender.index).remove();
           } else {
+            $("#notes").removeClass("alert-info alert-warning alert-danger alert-success");
+            $("#notes").addClass("alert-warning");
             $("#notes").text("Game Draw !!!");
             $("#cmdAttack").attr("disabled", "true");
             $("#restart").css("display", "block");
@@ -238,9 +240,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           myPlayer.attackPower += orginialHP;
         }
 
-        function validatePlayer(parent, childLength, errorMessage) {
+        function validatePlayer(parent, childLength, warnMessage) {
           if (parent.children().length !=2) {
-            $("#notes").text(errorMessage);
+            $("#notes").removeClass("alert-info alert-warning alert-danger alert-success");
+            $("#notes").addClass("alert-warning");
+            $("#notes").text(warnMessage);
             return false;
           }
           return true;
@@ -261,6 +265,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 defender = players[currentID];
                 $(this).addClass("defender");
                 $("#defender").append($(this));
+                $("#cmdAttack").removeAttr("disabled");
               }
               break;
             case "defender":
@@ -309,7 +314,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
              <h3>Game Information</h3>
            </div>
            <div>
-             <div id="notes" class="displayText">Please choose Players!!!</div>
+             <div id="notes" class="alert alert-info">Please choose Players!!!</div>
              <br/><br/>
              <div id="restart"></div>
            </div>
