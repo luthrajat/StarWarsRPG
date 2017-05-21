@@ -42,7 +42,7 @@ h3 {
    font: bold 12px Helvetica, Sans-Serif;
    background: rgb(0, 0, 0); /* fallback color */
    background: rgba(0, 0, 0, 0.7);
-   padding: 10px;
+   padding: 5px;
 }
 
 .enemie {
@@ -59,4 +59,8 @@ h3 {
 
 .thumbnail {
   border: 2px solid #0f0;
+}
+
+.progress {
+  margin-bottom: 0px;
 }

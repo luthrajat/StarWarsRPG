@@ -64,17 +64,21 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   <script src="assets/javascript/sprite.js" charset="utf-8"></script>
   <script type="text/javascript">
       $(document).ready(function() {
-        var players = [];
+        var players = [new Sprite(0, "Obi-Wan Kenobi", 0, 0, "assets/images/Obi-1.jpg"),
+                     new Sprite(1, "Luke Skywalker", 0, 0, "assets/images/Luke-2.png"),
+                     new Sprite(2, "Darth Sidious", 0, 0, "assets/images/Darth-3.jpg"),
+                     new Sprite(3, "Darth Maul", 0, 0, "assets/images/Darth-4.jpg")];
         var orginialHP = 0;
-         initGame();
+        var powerMIN = 100;
+        var powerMAX = 200;
+        var hpMAX = 20;
+        var hpMIN = 1;
+
+        initGame();
 
          function initGame() {
-            clearGame();
-            orginialHP = 0;
-            players =  [new Sprite(0, "Obi-Wan Kenobi", getRandomInt(100, 200), getRandomInt(1, 5), "assets/images/Obi-1.jpg"),
-                         new Sprite(1, "Luke Skywalker", getRandomInt(100, 200), getRandomInt(1, 20), "assets/images/Luke-2.png"),
-                         new Sprite(2, "Darth Sidious", getRandomInt(100, 200), getRandomInt(1, 20), "assets/images/Darth-3.jpg"),
-                         new Sprite(3, "Darth Maul", getRandomInt(100, 200), getRandomInt(1, 20), "assets/images/Darth-4.jpg")];
+          clearGame();
+          orginialHP = 0;
 
            $.each(players, createPlayerDisplaySprite);
 
@@ -97,6 +101,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
         function createPlayerDisplaySprite(index, player) {
           var sprite = player;
+          sprite.power = getRandomInt(powerMIN, powerMAX);
+          sprite.attackPower = getRandomInt(hpMIN, hpMAX);
 
           var spriteDisplay = $("<span>");
           spriteDisplay.addClass("thumbnail");
@@ -113,7 +119,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           img.width(120);
 
           var caption = createSpritText("name", index, player.name);
-          var power = createSpritText("power", index, player.power);
+          // var power = createSpritText("power", index, player.power);
+          var power = createProgressBar("power", index, player.power);
 
           spriteDisplay.append(caption);
           spriteDisplay.append(img);
@@ -134,6 +141,37 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           return caption;
         }
 
+        function createProgressBar(key, index, displayString) {
+          var currValue =  (displayString / powerMAX)*100;
+          var progress = $("<div>");
+          progress.addClass("progress");
+          var progressBar = $("<div>");
+          progressBar.attr("id","id-"+index+"-"+key);
+          progressBar.addClass("progress-bar");
+          progressBar.attr("role","progressbar");
+          progressBar.attr("style","width: "+currValue+"%;");
+          progressBar.attr("aria-valuenow",displayString);
+          progressBar.attr("aria-valuemin",powerMIN);
+          progressBar.attr("aria-valuemax",powerMAX);
+          progressBar.text(displayString);
+          progress.append(progressBar);
+          return progress;
+        }
+
+        function updateProgressBar(key, index, displayString) {
+            var currValue =  (displayString / powerMAX)*100;
+            var progressBar = $("#id-"+index+"-"+key);
+            progressBar.attr("style","width: "+currValue+"%;");
+            progressBar.attr("aria-valuenow",displayString);
+            progressBar.text(displayString);
+        }
+
+        // function updatePowerSpan(currentPlayer) {
+        //     var power
+        //     $("#id-"+currentPlayer.index+"-power").text(currentPlayer.power);
+        // }
+
+
         function createNewTextDisplay(displayString) {
           var displayDiv = $("<div>");
           displayDiv.addClass("displayText");
@@ -145,6 +183,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
         function createAButton(id, displayString, callbackFunction) {
           var attackButton = $("<button>");
+          if (id==="cmdAttack") {
+            attackButton.addClass("btn btn-danger");
+          } else {
+            attackButton.addClass("btn btn-primary");
+          }
           attackButton.attr("id", id);
           attackButton.text(displayString);
           attackButton.on("click", callbackFunction);
@@ -164,8 +207,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           if (myPlayer.power<1 || defender.power<1) return;
           myPlayer.power -= defender.attackPower;
           defender.power -= myPlayer.attackPower;
-          updatePowerSpan(myPlayer);
-          updatePowerSpan(defender);
+          // updatePowerSpan(myPlayer);
+          // updatePowerSpan(defender);
+          // updateProgressBar(myPlayer);
+          // updateProgressBar(defender);
+          updateProgressBar("power", myPlayer.index, myPlayer.power);
+          updateProgressBar("power", defender.index, defender.power);
 
           if (myPlayer.power>0 && defender.power>0) {
             //$("#notes").text(myPlayer.power + "&" + defender.power + "<--PW AK-> " + myPlayer.attackPower + "&" + defender.attackPower);
@@ -189,10 +236,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             $("#restart").css("display", "block");
           }
           myPlayer.attackPower += orginialHP;
-        }
-
-        function updatePowerSpan(currentPlayer) {
-            $("#id-"+currentPlayer.index+"-power").text(currentPlayer.power);
         }
 
         function validatePlayer(parent, childLength, errorMessage) {
