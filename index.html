@@ -1,0 +1,282 @@
+<!--
+Copyright (c) 2011-2017 GitHub Inc.
+
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of this software and associated documentation files (the
+"Software"), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, subject to
+the following conditions:
+
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+
+This application bundles the following third-party packages in accordance
+with the following licenses:
+
+
+Package: *
+License: BSD
+License Source: LICENSE
+Source Text:
+
+Copyright (c) Rajat Luthra (rajatluthra@gmail.com)
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+
+THIS IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS,
+EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+-->
+<!--
+  Author: Rajat Luthra
+  Date:   May 12th, 2017.
+
+  Purpose: Crystal Collector main.
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Star War Game !!!</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+  <!-- Add Bootstrap Themes Here (Just uncomment the ones below for example)-->
+  <link rel="stylesheet" href="https://bootswatch.com/cerulean/bootstrap.min.css">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <script type="text/javascript" src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
+  <script src="assets/javascript/sprite.js" charset="utf-8"></script>
+  <script type="text/javascript">
+      $(document).ready(function() {
+        var players = [];
+        var orginialHP = 0;
+         initGame();
+
+         function initGame() {
+            clearGame();
+            orginialHP = 0;
+            players =  [new Sprite(0, "Obi-Wan Kenobi", getRandomInt(100, 200), getRandomInt(1, 5), "assets/images/icecube.jpg"),
+                         new Sprite(1, "Luke Skywalter", getRandomInt(100, 200), getRandomInt(1, 20), "assets/images/cryst.png"),
+                         new Sprite(2, "Darth Sidious", getRandomInt(100, 200), getRandomInt(1, 20), "assets/images/sun.png"),
+                         new Sprite(3, "Darth Maul", getRandomInt(100, 200), getRandomInt(1, 20), "assets/images/2088_roseab.png")];
+
+           $.each(players, createPlayerDisplaySprite);
+
+           $("#yourCharacter").append(createNewTextDisplay("Your Character"));
+           $("#enemies").append(createNewTextDisplay("Enemies Available To Attack"));
+           $("#fightSection").append(createNewTextDisplay("Fight Selection"));
+           $("#fightSection").append(createAButton("Attack", attackAction));
+           $("#defender").append(createNewTextDisplay("Defender"));
+           $("#restart").append(createAButton("Restart", initGame));
+           $("#restart").css("display", "none");
+         }
+
+        function clearGame() {
+          $("#yourCharacter").empty();
+          $("#enemies").empty();
+          $("#fightSection").empty();
+          $("#defender").empty();
+          $("#restart").empty();
+        }
+
+        function createPlayerDisplaySprite(index, player) {
+          var sprite = player;
+
+          var spriteDisplay = $("<span>");
+          spriteDisplay.addClass("thumbnail");
+          spriteDisplay.css('float','left');
+          spriteDisplay.css('margin','2px');
+          spriteDisplay.attr("id", ("id-"+index));
+          spriteDisplay.attr("index", index);
+          spriteDisplay.width(100);
+
+          var img = $("<img>");
+          img.attr("src",sprite.img);
+          img.addClass("img-thumbnail");
+          img.attr("alt", player.name);
+          img.width(120);
+
+          var caption = createSpritText("name", index, player.name);
+          var power = createSpritText("power", index, player.power);
+
+          spriteDisplay.append(caption);
+          spriteDisplay.append(img);
+          spriteDisplay.append(power);
+
+          spriteDisplay.on("click", handleSpriteClick);
+          $("#dugout").append(spriteDisplay);
+        }
+
+        function createSpritText(key, index, displayString) {
+          var caption = $("<span>");
+          caption.attr("id","id-"+index+"-"+key);
+          caption.addClass("caption");
+          caption.text(displayString);
+          caption.css("text-align", "center");
+          caption.css("fontSize", 8);
+          caption.width(100);
+          return caption;
+        }
+
+        function createNewTextDisplay(displayString) {
+          var yourCharacter = $("<div>");
+          yourCharacter.css("clear","both");
+          yourCharacter.text(displayString);
+          yourCharacter.css("text-align", "left");
+          return yourCharacter;
+        }
+
+        function createAButton(displayString, callbackFunction) {
+          var attackButton = $("<button>");
+          attackButton.text(displayString);
+          attackButton.on("click", callbackFunction);
+          return attackButton;
+        }
+
+        function attackAction() {
+              if (validatePlayer($("#yourCharacter"), 2, "No Player selected!!!")
+                    && validatePlayer($("#defender"), 2, "No Defender selected!!!")) {
+                      playGame();
+              }
+        }
+
+        var myPlayer = undefined;
+        var defender = undefined;
+        function playGame() {
+          if (myPlayer.power<1 || defender.power<1) return;
+          myPlayer.power -= defender.attackPower;
+          defender.power -= myPlayer.attackPower;
+          updatePowerSpan(myPlayer);
+          updatePowerSpan(defender);
+
+          if (myPlayer.power>0 && defender.power>0) {
+            $("#notes").text(myPlayer.power + "&" + defender.power + "<--PW AK-> " + myPlayer.attackPower + "&" + defender.attackPower);
+          } else if (myPlayer.power<1 && defender.power>=1) {
+            $("#notes").text("You have been defeted!");
+            $("#restart").css("display", "block");
+          } else if (defender.power<1 && myPlayer.power>=1) {
+            $("#notes").text("You won!!!!");
+            $("#restart").css("display", "block");
+            $("#id-"+defender.index).remove();
+          } else {
+            $("#notes").text("Draw!!!");
+            $("#notes").text("DRAW: " + myPlayer.power + "&" + defender.power + "<--PW AK-> " + myPlayer.attackPower + "&" + defender.attackPower);
+          }
+          myPlayer.attackPower += orginialHP;
+        }
+
+        function updatePowerSpan(currentPlayer) {
+            $("#id-"+currentPlayer.index+"-power").text(currentPlayer.power);
+        }
+
+        function validatePlayer(parent, childLength, errorMessage) {
+          if (parent.children().length !=2) {
+            $("#notes").text(errorMessage);
+            return false;
+          }
+          return true;
+        }
+
+        function handleSpriteClick() {
+          var parentID = $(this).parent().attr("id");
+          var currentID = $(this).attr("index");
+          switch(parentID) {
+            case "dugout":
+              myPlayer = players[currentID];
+              orginialHP = myPlayer.attackPower;
+              $("#yourCharacter").append($(this));
+              $.each($("#dugout").children(), moveElementsToEnemies);
+              break;
+            case "enemies":
+              if ($("#defender").children().length ==1) { // Ensure no existing sprit
+                defender = players[currentID];
+                $(this).addClass("defender");
+                $("#defender").append($(this));
+              }
+              break;
+            case "defender":
+              break;
+            default:
+              alert($(this).parent().attr("id"));
+          }
+        }
+
+        function moveElementsToEnemies(index, item) {
+          $(item).addClass("enemie");
+          $(item).children("span").addClass("enemieText");
+          $("#enemies").append($(item));
+        }
+
+        /** Helper function to return Random Number between min and max **/
+        function getRandomInt(min, max) {
+          return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+
+      });
+  </script>
+</head>
+<body>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-7">
+          <div class="page-header">
+            <h3>Star Wars RPG!</h3>
+          </div>
+          <div class="row">
+            <section class="main-section">
+                <div class="col-md-12">
+                  <div id="dugout"></div>
+                  <div id="yourCharacter"></div>
+                  <div id="enemies"></div>
+                  <div id="fightSection"></div>
+                  <div id="defender"></div>
+                  <div id="notes">Please choose Players!!!</div>
+                  <div id="restart"></div>
+                </div>
+              </section>
+          </div>
+        </div>
+        <div class="col-md-5">
+         <!-- <div class="panel panel-default"> -->
+           <div class="page-header">
+             <h3>Options & Tally</h3>
+           </div>
+           <div>
+             Crystal Count to Display:&nbsp;<select id="crystalCount" onchange="initGame();"></select><br/>
+             Random Number Range:<br/>&nbsp;&nbsp;Min:&nbsp;<select id="minCategory" onchange="reset();"></select>
+             &nbsp;Max:&nbsp;<select id="maxCategory" onchange="reset();"></select>
+             <br/><br/>
+             Press to Replay:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button id = "reset" type="button" name="button" onclick="reset();">Play Again</button>
+           </div>
+           <div class="panel-body">
+             <h4>Tally</h4>
+             <div id="scores">
+                <p>Wins:<span id="win">0</span>&nbsp;&nbsp;Looses:<span id="lose">0</span></p>
+             </table>
+             <table id="scoreBoard">
+               <th>Random Number</html>
+               <th>User's Total</html>
+               <th>Won?</html>
+             </table>
+           </div>
+        </div>
+      </div>
+    </div>
+</body>
+</html>
