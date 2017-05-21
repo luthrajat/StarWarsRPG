@@ -71,19 +71,19 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
          function initGame() {
             clearGame();
             orginialHP = 0;
-            players =  [new Sprite(0, "Obi-Wan Kenobi", getRandomInt(100, 200), getRandomInt(1, 5), "assets/images/icecube.jpg"),
-                         new Sprite(1, "Luke Skywalter", getRandomInt(100, 200), getRandomInt(1, 20), "assets/images/cryst.png"),
-                         new Sprite(2, "Darth Sidious", getRandomInt(100, 200), getRandomInt(1, 20), "assets/images/sun.png"),
-                         new Sprite(3, "Darth Maul", getRandomInt(100, 200), getRandomInt(1, 20), "assets/images/2088_roseab.png")];
+            players =  [new Sprite(0, "Obi-Wan Kenobi", getRandomInt(100, 200), getRandomInt(1, 5), "assets/images/Obi-1.jpg"),
+                         new Sprite(1, "Luke Skywalker", getRandomInt(100, 200), getRandomInt(1, 20), "assets/images/Luke-2.png"),
+                         new Sprite(2, "Darth Sidious", getRandomInt(100, 200), getRandomInt(1, 20), "assets/images/Darth-3.jpg"),
+                         new Sprite(3, "Darth Maul", getRandomInt(100, 200), getRandomInt(1, 20), "assets/images/Darth-4.jpg")];
 
            $.each(players, createPlayerDisplaySprite);
 
            $("#yourCharacter").append(createNewTextDisplay("Your Character"));
            $("#enemies").append(createNewTextDisplay("Enemies Available To Attack"));
            $("#fightSection").append(createNewTextDisplay("Fight Selection"));
-           $("#fightSection").append(createAButton("Attack", attackAction));
+           $("#fightSection").append(createAButton("cmdAttack", "Attack", attackAction));
            $("#defender").append(createNewTextDisplay("Defender"));
-           $("#restart").append(createAButton("Restart", initGame));
+           $("#restart").append(createAButton("cmdRestart", "Restart", initGame));
            $("#restart").css("display", "none");
          }
 
@@ -135,15 +135,17 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
 
         function createNewTextDisplay(displayString) {
-          var yourCharacter = $("<div>");
-          yourCharacter.css("clear","both");
-          yourCharacter.text(displayString);
-          yourCharacter.css("text-align", "left");
-          return yourCharacter;
+          var displayDiv = $("<div>");
+          displayDiv.addClass("displayText");
+          displayDiv.css("clear","both");
+          displayDiv.text(displayString);
+          displayDiv.css("text-align", "left");
+          return displayDiv;
         }
 
-        function createAButton(displayString, callbackFunction) {
+        function createAButton(id, displayString, callbackFunction) {
           var attackButton = $("<button>");
+          attackButton.attr("id", id);
           attackButton.text(displayString);
           attackButton.on("click", callbackFunction);
           return attackButton;
@@ -166,17 +168,25 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           updatePowerSpan(defender);
 
           if (myPlayer.power>0 && defender.power>0) {
-            $("#notes").text(myPlayer.power + "&" + defender.power + "<--PW AK-> " + myPlayer.attackPower + "&" + defender.attackPower);
+            //$("#notes").text(myPlayer.power + "&" + defender.power + "<--PW AK-> " + myPlayer.attackPower + "&" + defender.attackPower);
+            $("#notes").text("You attacked " + defender.name + " for " + myPlayer.attackPower + " damage.");
+            $("#notes").append("<br/>");
+            $("#notes").append(defender.name + " attacked you back with " + defender.attackPower + " damage.");
           } else if (myPlayer.power<1 && defender.power>=1) {
-            $("#notes").text("You have been defeted!");
+            $("#notes").text("You have been defeted, GAME OVER!!!");
             $("#restart").css("display", "block");
+            $("#cmdAttack").attr("disabled", "true");
           } else if (defender.power<1 && myPlayer.power>=1) {
             $("#notes").text("You won!!!!");
-            $("#restart").css("display", "block");
+            if ($("#enemies").children().length==1) {
+              $("#restart").css("display", "block");
+              $("#cmdAttack").attr("disabled", "true");
+            }
             $("#id-"+defender.index).remove();
           } else {
-            $("#notes").text("Draw!!!");
-            $("#notes").text("DRAW: " + myPlayer.power + "&" + defender.power + "<--PW AK-> " + myPlayer.attackPower + "&" + defender.attackPower);
+            $("#notes").text("Game Draw !!!");
+            $("#cmdAttack").attr("disabled", "true");
+            $("#restart").css("display", "block");
           }
           myPlayer.attackPower += orginialHP;
         }
@@ -213,7 +223,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             case "defender":
               break;
             default:
-              alert($(this).parent().attr("id"));
+              //alert($(this).parent().attr("id"));
           }
         }
 
@@ -246,8 +256,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                   <div id="enemies"></div>
                   <div id="fightSection"></div>
                   <div id="defender"></div>
-                  <div id="notes">Please choose Players!!!</div>
-                  <div id="restart"></div>
                 </div>
               </section>
           </div>
@@ -255,16 +263,14 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         <div class="col-md-5">
          <!-- <div class="panel panel-default"> -->
            <div class="page-header">
-             <h3>Options & Tally</h3>
+             <h3>Game Information</h3>
            </div>
            <div>
-             Crystal Count to Display:&nbsp;<select id="crystalCount" onchange="initGame();"></select><br/>
-             Random Number Range:<br/>&nbsp;&nbsp;Min:&nbsp;<select id="minCategory" onchange="reset();"></select>
-             &nbsp;Max:&nbsp;<select id="maxCategory" onchange="reset();"></select>
+             <div id="notes" class="displayText">Please choose Players!!!</div>
              <br/><br/>
-             Press to Replay:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button id = "reset" type="button" name="button" onclick="reset();">Play Again</button>
+             <div id="restart"></div>
            </div>
-           <div class="panel-body">
+           <!-- <div class="panel-body">
              <h4>Tally</h4>
              <div id="scores">
                 <p>Wins:<span id="win">0</span>&nbsp;&nbsp;Looses:<span id="lose">0</span></p>
@@ -275,7 +281,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                <th>Won?</html>
              </table>
            </div>
-        </div>
+        </div> -->
       </div>
     </div>
 </body>

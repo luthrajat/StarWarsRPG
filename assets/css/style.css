@@ -1,3 +1,9 @@
+body {
+    background-image:url("../images/background.jpg");
+    background-repeat: no-repeat center center fixed;
+    background-size: cover;
+}
+
 table {
   border-collapse: collapse;
   width: 100%;
@@ -8,10 +14,35 @@ td, th {
   text-align: center;
 }
 
-#notes {
-  border:2px solid purple;
-  clear:both;
-  text-align:center;
+h3 {
+   /*clear: both;
+   color: white;
+   font: bold 12px Helvetica, Sans-Serif;*/
+   color: white;
+   background: rgb(0, 0, 0); /* fallback color */
+   background: rgba(0, 0, 0, 0.7);
+   /*padding: 10px;*/
+}
+
+#yourCharacter {
+  min-height: 178px;
+}
+
+#enemies {
+  min-height: 178px;
+}
+
+#defender {
+  min-height: 178px;
+}
+
+.displayText {
+   clear: both;
+   color: white;
+   font: bold 12px Helvetica, Sans-Serif;
+   background: rgb(0, 0, 0); /* fallback color */
+   background: rgba(0, 0, 0, 0.7);
+   padding: 10px;
 }
 
 .enemie {
@@ -21,7 +52,6 @@ td, th {
 .enemieText {
   color: #fff !important;
 }
-
 
 .defender {
   background-color: black;
