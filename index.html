@@ -87,8 +87,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
            $("#fightSection").append(createNewTextDisplay("Fight Selection"));
            $("#fightSection").append(createAButton("cmdAttack", "Attack", attackAction));
            $("#defender").append(createNewTextDisplay("Defender"));
-           $("#restart").append(createAButton("cmdRestart", "Restart", initGame));
-           $("#restart").css("display", "none");
+          //  $("#restart").append(createAButton("cmdRestart", "Restart", initGame));
+          //  $("#restart").css("display", "none");
            $("#cmdAttack").attr("disabled", "true");
 
            $("#notes").removeClass("alert alert-info alert-warning alert-danger alert-success");
@@ -101,7 +101,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           $("#enemies").empty();
           $("#fightSection").empty();
           $("#defender").empty();
-          $("#restart").empty();
+          // $("#restart").empty();
         }
 
         function createPlayerDisplaySprite(index, player) {
@@ -218,13 +218,21 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           } else if (myPlayer.power<1 && defender.power>=1) {
             $("#notes").removeClass("alert-info alert-warning alert-danger alert-success");
             $("#notes").addClass("alert-danger");
-            $("#notes").text("You have been defeted, GAME OVER!!!");
+            $("#notes").html("<strong>GAME OVER: </strong>You have been defeted by " + defender.name + ", please press ");
+            $("#notes").append(createAButton("cmdRestart", "Restart", initGame));
+            $("#notes").append(" to play again.");
             $("#restart").css("display", "block");
             $("#cmdAttack").attr("disabled", "true");
           } else if (defender.power<1 && myPlayer.power>=1) {
             $("#notes").removeClass("alert-info alert-warning alert-danger alert-success");
             $("#notes").addClass("alert-success");
-            $("#notes").text("You won!!!!");
+            if ($("#enemies").children().length==1) {
+              $("#notes").html("You have defated " + defender.name + ", please press ");
+              $("#notes").append(createAButton("cmdRestart", "Restart", initGame));
+              $("#notes").append(" to play again.");
+            }  else {
+              $("#notes").html("You have defated " + defender.name + ", please choose another enemy to fight.");
+            }
             if ($("#enemies").children().length==1) {
               $("#restart").css("display", "block");
             }
@@ -233,7 +241,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           } else {
             $("#notes").removeClass("alert-info alert-warning alert-danger alert-success");
             $("#notes").addClass("alert-warning");
-            $("#notes").text("Game Draw !!!");
+            $("#notes").html("Game between "+myPlayer.name+" & "+defender.name+" ends in a tie, please press ");
+            $("#notes").append(createAButton("cmdRestart", "Restart", initGame));
+            $("#notes").append(" to play again.");
             $("#cmdAttack").attr("disabled", "true");
             $("#restart").css("display", "block");
           }
@@ -309,27 +319,14 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           </div>
         </div>
         <div class="col-md-5">
-         <!-- <div class="panel panel-default"> -->
            <div class="page-header">
              <h3>Game Information</h3>
            </div>
            <div>
              <div id="notes" class="alert alert-info">Please choose Players!!!</div>
              <br/><br/>
-             <div id="restart"></div>
+             <!-- <div id="restart"></div> -->
            </div>
-           <!-- <div class="panel-body">
-             <h4>Tally</h4>
-             <div id="scores">
-                <p>Wins:<span id="win">0</span>&nbsp;&nbsp;Looses:<span id="lose">0</span></p>
-             </table>
-             <table id="scoreBoard">
-               <th>Random Number</html>
-               <th>User's Total</html>
-               <th>Won?</html>
-             </table>
-           </div>
-        </div> -->
       </div>
     </div>
 </body>
