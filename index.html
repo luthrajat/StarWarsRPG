@@ -208,7 +208,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           defender.power -= myPlayer.attackPower;
           updateProgressBar("power", myPlayer.index, myPlayer.power);
           updateProgressBar("power", defender.index, defender.power);
+          runGamePlayLogic();
+          myPlayer.attackPower += getRandomInt(hpMIN, hpMAX/2);;
+        }
 
+        function runGamePlayLogic() {
           if (myPlayer.power>0 && defender.power>0) {
             createHtmlTextNotification("alert-info", "You attacked " + defender.name + " for <span class='badge badge-pill badge-primary'>" + myPlayer.attackPower + "</span> damage.",
                                           false, "<br/>" + defender.name + " attacked you back with <span class='badge badge-pill badge-primary'>" + defender.attackPower + "</span> damage.");
@@ -229,7 +233,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                                           true, " to play again.");
             $("#cmdAttack").attr("disabled", "true");
           }
-          myPlayer.attackPower += getRandomInt(hpMIN, hpMAX/2);;
         }
 
         function toggleNotesCSS(className) {
