@@ -93,7 +93,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
            $("#notes").removeClass("alert alert-info alert-warning alert-danger alert-success");
            $("#notes").addClass("alert alert-info");
-           $("#notes").text("Please choose Players!!!");
+           $("#notes").text("Please choose your player, by clicking the the player sprite!!!");
          }
 
         function clearGame() {
@@ -266,9 +266,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           switch(parentID) {
             case "dugout":
               myPlayer = players[currentID];
-              //orginialHP = myPlayer.attackPower;
               $("#yourCharacter").append($(this));
               $.each($("#dugout").children(), moveElementsToEnemies);
+              $("#notes").text("Please choose enemie player, by clicking the the enemie player sprite!!!");
               break;
             case "enemies":
               if ($("#defender").children().length ==1) { // Ensure no existing sprit
@@ -276,12 +276,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 $(this).addClass("defender");
                 $("#defender").append($(this));
                 $("#cmdAttack").removeAttr("disabled");
+                $("#notes").text("Please press Attack button, to play !!!");
               }
               break;
             case "defender":
               break;
             default:
-              //alert($(this).parent().attr("id"));
           }
         }
 
@@ -323,7 +323,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
              <h3>Game Information</h3>
            </div>
            <div>
-             <div id="notes" class="alert alert-info">Please choose Players!!!</div>
+             <div id="notes" class="alert alert-info">Please choose your player, by clicking the the player sprite!!!</div>
              <br/><br/>
              <!-- <div id="restart"></div> -->
            </div>
