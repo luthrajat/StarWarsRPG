@@ -223,7 +223,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             if ($("#enemies").children().length==1) {
               createHtmlTextNotification("You have defated " + defender.name + ", please press ", true, " to play again.");
             }  else {
-              $("#notes").html("You have defated " + defender.name + ", please choose another enemy to fight.");
+              createHtmlTextNotification("You have defated " + defender.name + ", please choose another enemy to fight.", false, "");
             }
             $("#cmdAttack").attr("disabled", "true");
             $("#id-"+defender.index).remove();
