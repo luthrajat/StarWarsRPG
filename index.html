@@ -210,26 +210,22 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           updateProgressBar("power", defender.index, defender.power);
 
           if (myPlayer.power>0 && defender.power>0) {
-            toggleNotesCSS("alert-info");
-            createHtmlTextNotification("You attacked " + defender.name + " for <span class='badge badge-pill badge-primary'>" + myPlayer.attackPower + "</span> damage.",
+            createHtmlTextNotification("alert-info", "You attacked " + defender.name + " for <span class='badge badge-pill badge-primary'>" + myPlayer.attackPower + "</span> damage.",
                                           false, "<br/>" + defender.name + " attacked you back with <span class='badge badge-pill badge-primary'>" + defender.attackPower + "</span> damage.");
           } else if (myPlayer.power<1 && defender.power>=1) {
-            toggleNotesCSS("alert-danger");
-            createHtmlTextNotification("<strong>GAME OVER: </strong>You have been defeted by " + defender.name + ", please press ",
+            createHtmlTextNotification("alert-danger", "<strong>GAME OVER: </strong>You have been defeted by " + defender.name + ", please press ",
                                           true, " to play again.");
             $("#cmdAttack").attr("disabled", "true");
           } else if (defender.power<1 && myPlayer.power>=1) {
-            toggleNotesCSS("alert-success");
             if ($("#enemies").children().length==1) {
-              createHtmlTextNotification("You have defated " + defender.name + ", please press ", true, " to play again.");
+              createHtmlTextNotification("alert-success", "<strong>You WON: </strong>You have defated " + defender.name + ", please press ", true, " to play again.");
             }  else {
-              createHtmlTextNotification("You have defated " + defender.name + ", please choose another enemy to fight.", false, "");
+              createHtmlTextNotification("alert-success", "<strong>ROUND: </strong>You have defated " + defender.name + ", please choose another enemy to fight.", false, "");
             }
             $("#cmdAttack").attr("disabled", "true");
             $("#id-"+defender.index).remove();
           } else {
-            toggleNotesCSS("alert-warning");
-            createHtmlTextNotification("Game between "+myPlayer.name+" & "+defender.name+" ends in a tie, please press ",
+            createHtmlTextNotification("alert-warning", "<strong>Tie: </strong>Game between "+myPlayer.name+" & "+defender.name+" ends in a tie, please press ",
                                           true, " to play again.");
             $("#cmdAttack").attr("disabled", "true");
           }
@@ -241,7 +237,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           $("#notes").addClass(className);
         }
 
-        function createHtmlTextNotification(prefix, isRestartButtonRequired, suffix) {
+        function createHtmlTextNotification(className, prefix, isRestartButtonRequired, suffix) {
+          toggleNotesCSS(className);
           $("#notes").html(prefix);
           if (isRestartButtonRequired) {
             $("#notes").append(createAButton("cmdRestart", "Restart", initGame));
