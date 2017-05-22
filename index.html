@@ -210,44 +210,43 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           updateProgressBar("power", defender.index, defender.power);
 
           if (myPlayer.power>0 && defender.power>0) {
-            $("#notes").removeClass("alert-info alert-warning alert-danger alert-success");
-            $("#notes").addClass("alert-info");
-            $("#notes").html("You attacked " + defender.name + " for <span class='badge badge-pill badge-primary'>" + myPlayer.attackPower + "</span> damage.");
-            $("#notes").append("<br/>");
-            $("#notes").append(defender.name + " attacked you back with <span class='badge badge-pill badge-primary'>" + defender.attackPower + "</span> damage.");
+            toggleNotesCSS("alert-info");
+            createHtmlTextNotification("You attacked " + defender.name + " for <span class='badge badge-pill badge-primary'>" + myPlayer.attackPower + "</span> damage.",
+                                          false, "<br/>" + defender.name + " attacked you back with <span class='badge badge-pill badge-primary'>" + defender.attackPower + "</span> damage.");
           } else if (myPlayer.power<1 && defender.power>=1) {
-            $("#notes").removeClass("alert-info alert-warning alert-danger alert-success");
-            $("#notes").addClass("alert-danger");
-            $("#notes").html("<strong>GAME OVER: </strong>You have been defeted by " + defender.name + ", please press ");
-            $("#notes").append(createAButton("cmdRestart", "Restart", initGame));
-            $("#notes").append(" to play again.");
-            $("#restart").css("display", "block");
+            toggleNotesCSS("alert-danger");
+            createHtmlTextNotification("<strong>GAME OVER: </strong>You have been defeted by " + defender.name + ", please press ",
+                                          true, " to play again.");
             $("#cmdAttack").attr("disabled", "true");
           } else if (defender.power<1 && myPlayer.power>=1) {
-            $("#notes").removeClass("alert-info alert-warning alert-danger alert-success");
-            $("#notes").addClass("alert-success");
+            toggleNotesCSS("alert-success");
             if ($("#enemies").children().length==1) {
-              $("#notes").html("You have defated " + defender.name + ", please press ");
-              $("#notes").append(createAButton("cmdRestart", "Restart", initGame));
-              $("#notes").append(" to play again.");
+              createHtmlTextNotification("You have defated " + defender.name + ", please press ", true, " to play again.");
             }  else {
               $("#notes").html("You have defated " + defender.name + ", please choose another enemy to fight.");
-            }
-            if ($("#enemies").children().length==1) {
-              $("#restart").css("display", "block");
             }
             $("#cmdAttack").attr("disabled", "true");
             $("#id-"+defender.index).remove();
           } else {
-            $("#notes").removeClass("alert-info alert-warning alert-danger alert-success");
-            $("#notes").addClass("alert-warning");
-            $("#notes").html("Game between "+myPlayer.name+" & "+defender.name+" ends in a tie, please press ");
-            $("#notes").append(createAButton("cmdRestart", "Restart", initGame));
-            $("#notes").append(" to play again.");
+            toggleNotesCSS("alert-warning");
+            createHtmlTextNotification("Game between "+myPlayer.name+" & "+defender.name+" ends in a tie, please press ",
+                                          true, " to play again.");
             $("#cmdAttack").attr("disabled", "true");
-            $("#restart").css("display", "block");
           }
           myPlayer.attackPower += getRandomInt(hpMIN, hpMAX/2);;
+        }
+
+        function toggleNotesCSS(className) {
+          $("#notes").removeClass("alert-info alert-warning alert-danger alert-success");
+          $("#notes").addClass(className);
+        }
+
+        function createHtmlTextNotification(prefix, isRestartButtonRequired, suffix) {
+          $("#notes").html(prefix);
+          if (isRestartButtonRequired) {
+            $("#notes").append(createAButton("cmdRestart", "Restart", initGame));
+          }
+          $("#notes").append(suffix);
         }
 
         function validatePlayer(parent, childLength, warnMessage) {
