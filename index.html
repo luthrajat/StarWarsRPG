@@ -222,9 +222,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             $("#cmdAttack").attr("disabled", "true");
           } else if (defender.power<1 && myPlayer.power>=1) {
             if ($("#enemies").children().length==1) {
-              createHtmlTextNotification("alert-success", "<strong>You WON: </strong>You have defated " + defender.name + ", please press ", true, " to play again.");
+              createHtmlTextNotification("alert-success", "<strong>You WON: </strong>You have defeated " + defender.name + ", please press ", true, " to play again.");
             }  else {
-              createHtmlTextNotification("alert-success", "<strong>ROUND: </strong>You have defated " + defender.name + ", please choose another enemy to fight.", false, "");
+              createHtmlTextNotification("alert-success", "<strong>ROUND: </strong>You have defeated " + defender.name + ", please choose another enemy to fight.", false, "");
             }
             $("#cmdAttack").attr("disabled", "true");
             $("#id-"+defender.index).remove();
